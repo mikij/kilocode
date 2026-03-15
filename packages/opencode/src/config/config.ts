@@ -1584,7 +1584,7 @@ export namespace Config {
       }
     }
 
-    // Check project .opencode directories (closest first) - higher precedence than .kilo
+    // Check project .opencode directories (closest first) - highest precedence
     if (!Flag.KILO_DISABLE_PROJECT_CONFIG) {
       const opencodeDirs = await Array.fromAsync(
         Filesystem.up({
@@ -1594,6 +1594,25 @@ export namespace Config {
         }),
       )
       for (const dir of opencodeDirs) {
+        for (const file of CONFIG_FILES_KILO) {
+          const filepath = path.join(dir, file)
+          if (await hasMcpDefinition(filepath, mcpName)) {
+            return filepath
+          }
+        }
+      }
+    }
+
+    // Check project .kilocode directories (legacy, closest first)
+    if (!Flag.KILO_DISABLE_PROJECT_CONFIG) {
+      const kilocodeDirs = await Array.fromAsync(
+        Filesystem.up({
+          targets: [".kilocode"],
+          start: Instance.directory,
+          stop: Instance.worktree,
+        }),
+      )
+      for (const dir of kilocodeDirs) {
         for (const file of CONFIG_FILES_KILO) {
           const filepath = path.join(dir, file)
           if (await hasMcpDefinition(filepath, mcpName)) {
@@ -1727,6 +1746,27 @@ export namespace Config {
         }
       }
       // .opencode/ directory exists but no config file - create new file here
+      if (existsSync(dir)) {
+        return path.join(dir, "opencode.json")
+      }
+    }
+
+    // Check .kilocode directories (legacy project-level)
+    const kilocodeDirs = await Array.fromAsync(
+      Filesystem.up({
+        targets: [".kilocode"],
+        start: Instance.directory,
+        stop: Instance.worktree,
+      }),
+    )
+    for (const dir of kilocodeDirs) {
+      for (const file of CONFIG_FILES_KILO) {
+        const filepath = path.join(dir, file)
+        if (existsSync(filepath)) {
+          return filepath
+        }
+      }
+      // .kilocode/ directory exists but no config file - create new file here
       if (existsSync(dir)) {
         return path.join(dir, "opencode.json")
       }
