@@ -1051,7 +1051,7 @@ export type GlobalEvent = {
 export type LogLevel = "DEBUG" | "INFO" | "WARN" | "ERROR"
 
 /**
- * Server configuration for opencode serve and web commands
+ * Server configuration for kilo serve and web commands
  */
 export type ServerConfig = {
   /**
@@ -1067,7 +1067,7 @@ export type ServerConfig = {
    */
   mdns?: boolean
   /**
-   * Custom domain name for mDNS service (default: opencode.local)
+   * Custom domain name for mDNS service (default: kilo.local)
    */
   mdnsDomain?: string
   /**
@@ -1222,6 +1222,7 @@ export type ProviderConfig = {
       }
       recommendedIndex?: number
       prompt?: "codex" | "gemini" | "beast" | "anthropic" | "trinity" | "anthropic_without_todo"
+      isFree?: boolean
       experimental?: boolean
       status?: "alpha" | "beta" | "deprecated"
       options?: {
@@ -1351,7 +1352,7 @@ export type Config = {
   logLevel?: LogLevel
   server?: ServerConfig
   /**
-   * Command configuration, see https://opencode.ai/docs/commands
+   * Command configuration, see https://kilo.ai/docs/commands
    */
   command?: {
     [key: string]: {
@@ -1425,7 +1426,7 @@ export type Config = {
     [key: string]: AgentConfig | undefined
   }
   /**
-   * Agent configuration, see https://opencode.ai/docs/agents
+   * Agent configuration, see https://kilo.ai/docs/agents
    */
   agent?: {
     plan?: AgentConfig
@@ -1523,6 +1524,10 @@ export type Config = {
      * Enable the batch tool
      */
     batch_tool?: boolean
+    /**
+     * Enable AI-powered codebase search
+     */
+    codebase_search?: boolean
     /**
      * Enable telemetry. Set to false to opt-out.
      */
@@ -1650,6 +1655,7 @@ export type Model = {
   }
   recommendedIndex?: number
   prompt?: "codex" | "gemini" | "beast" | "anthropic" | "trinity" | "anthropic_without_todo"
+  isFree?: boolean
 }
 
 export type Provider = {
@@ -3955,10 +3961,10 @@ export type PermissionReplyResponses = {
 
 export type PermissionReplyResponse = PermissionReplyResponses[keyof PermissionReplyResponses]
 
-export type PermissionSavePatternRulesData = {
+export type PermissionSaveAlwaysRulesData = {
   body?: {
-    approvedPatterns?: Array<string>
-    deniedPatterns?: Array<string>
+    approvedAlways?: Array<string>
+    deniedAlways?: Array<string>
   }
   path: {
     requestID: string
@@ -3967,10 +3973,10 @@ export type PermissionSavePatternRulesData = {
     directory?: string
     workspace?: string
   }
-  url: "/permission/{requestID}/pattern-rules"
+  url: "/permission/{requestID}/always-rules"
 }
 
-export type PermissionSavePatternRulesErrors = {
+export type PermissionSaveAlwaysRulesErrors = {
   /**
    * Bad request
    */
@@ -3981,17 +3987,17 @@ export type PermissionSavePatternRulesErrors = {
   404: NotFoundError
 }
 
-export type PermissionSavePatternRulesError = PermissionSavePatternRulesErrors[keyof PermissionSavePatternRulesErrors]
+export type PermissionSaveAlwaysRulesError = PermissionSaveAlwaysRulesErrors[keyof PermissionSaveAlwaysRulesErrors]
 
-export type PermissionSavePatternRulesResponses = {
+export type PermissionSaveAlwaysRulesResponses = {
   /**
-   * Pattern rules saved successfully
+   * Always rules saved successfully
    */
   200: boolean
 }
 
-export type PermissionSavePatternRulesResponse =
-  PermissionSavePatternRulesResponses[keyof PermissionSavePatternRulesResponses]
+export type PermissionSaveAlwaysRulesResponse =
+  PermissionSaveAlwaysRulesResponses[keyof PermissionSaveAlwaysRulesResponses]
 
 export type PermissionListData = {
   body?: never
@@ -4163,6 +4169,7 @@ export type ProviderListResponses = {
           }
           recommendedIndex?: number
           prompt?: "codex" | "gemini" | "beast" | "anthropic" | "trinity" | "anthropic_without_todo"
+          isFree?: boolean
           experimental?: boolean
           status?: "alpha" | "beta" | "deprecated"
           options: {
@@ -4409,6 +4416,66 @@ export type EnhancePromptEnhanceResponses = {
 }
 
 export type EnhancePromptEnhanceResponse = EnhancePromptEnhanceResponses[keyof EnhancePromptEnhanceResponses]
+
+export type KilocodeRemoveSkillData = {
+  body?: {
+    location: string
+  }
+  path?: never
+  query?: {
+    directory?: string
+    workspace?: string
+  }
+  url: "/kilocode/skill/remove"
+}
+
+export type KilocodeRemoveSkillErrors = {
+  /**
+   * Bad request
+   */
+  400: BadRequestError
+}
+
+export type KilocodeRemoveSkillError = KilocodeRemoveSkillErrors[keyof KilocodeRemoveSkillErrors]
+
+export type KilocodeRemoveSkillResponses = {
+  /**
+   * Skill removed
+   */
+  200: boolean
+}
+
+export type KilocodeRemoveSkillResponse = KilocodeRemoveSkillResponses[keyof KilocodeRemoveSkillResponses]
+
+export type KilocodeRemoveAgentData = {
+  body?: {
+    name: string
+  }
+  path?: never
+  query?: {
+    directory?: string
+    workspace?: string
+  }
+  url: "/kilocode/agent/remove"
+}
+
+export type KilocodeRemoveAgentErrors = {
+  /**
+   * Bad request
+   */
+  400: BadRequestError
+}
+
+export type KilocodeRemoveAgentError = KilocodeRemoveAgentErrors[keyof KilocodeRemoveAgentErrors]
+
+export type KilocodeRemoveAgentResponses = {
+  /**
+   * Agent removed
+   */
+  200: boolean
+}
+
+export type KilocodeRemoveAgentResponse = KilocodeRemoveAgentResponses[keyof KilocodeRemoveAgentResponses]
 
 export type KiloProfileData = {
   body?: never
