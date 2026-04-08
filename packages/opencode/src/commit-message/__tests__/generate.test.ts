@@ -127,6 +127,7 @@ describe("commit-message.generate", () => {
       expect(result.message).toBe("refactor: simplify logic")
     })
 
+    // kilocode_change start
     test("extractSection ignores shorter matching fences and accepts longer closers", async () => {
       const mod = await import("../generate")
       const { extractSection } = mod
@@ -213,6 +214,7 @@ Use this format.
 feat: keep nested heading content`.trim(),
       )
     })
+    // kilocode_change end
 
     test("returns clean message when no markers present", async () => {
       mockStreamText = "docs: update readme"

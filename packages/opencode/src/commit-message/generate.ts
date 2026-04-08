@@ -1,15 +1,18 @@
-import { Agent } from "@/agent/agent"
-import { Provider } from "@/provider/provider"
+import { Provider } from "@/provider/provider" // kilocode_change
 import { LLM } from "@/session/llm"
+import { Agent } from "@/agent/agent"
+import { Log } from "@/util/log" // kilocode_change
+import type { CommitMessageRequest, CommitMessageResponse, GitContext } from "./types" // kilocode_change
+import { getGitContext } from "./git-context"
+// kilocode_change start
 import { Filesystem } from "@/util/filesystem"
 import { git } from "@/util/git"
-import { Log } from "@/util/log"
 import { join, dirname } from "path"
-import { getGitContext } from "./git-context"
-import type { CommitMessageRequest, CommitMessageResponse, GitContext } from "./types"
+// kilocode_change end
 
-const log = Log.create({ service: "commit-message" })
+const log = Log.create({ service: "commit-message" }) // kilocode_change
 
+// kilocode_change start
 const SECTION_HEADING = "## Commit Message"
 
 const FENCE_PATTERN = /^[ ]{0,3}(?:`{3,}|~{3,})/
@@ -94,7 +97,9 @@ export function extractSection(content: string, heading: string): string | undef
   const trimmedSection = rawSection.replace(/^\n+|\n+$/g, "")
   return trimmedSection || undefined
 }
+// kilocode_change end
 
+// kilocode_change start
 async function loadInstructionsFromAgentsMd(
   searchPath: string,
   repoPath: string,
@@ -159,6 +164,7 @@ async function loadInstructions(cwd: string): Promise<{ instructions?: string; f
 
   return { found: false }
 }
+// kilocode_change end
 
 const SYSTEM_PROMPT = `You are an expert Git commit message generator that creates conventional commit messages based on staged changes. Analyze the provided git diff output and generate an appropriate conventional commit message following the specification.
 
@@ -274,6 +280,7 @@ export async function generateCommitMessage(request: CommitMessageRequest): Prom
     throw new Error("No changes found to generate a commit message for")
   }
 
+  // kilocode_change start
   log.info("generating", {
     branch: ctx.branch,
     files: ctx.files.length,
@@ -299,11 +306,14 @@ export async function generateCommitMessage(request: CommitMessageRequest): Prom
     prompt,
     temperature: 0.3,
   }
+  // kilocode_change end
 
   let userMessage = buildUserMessage(ctx)
+  // kilocode_change start
   if (request.previousMessage) {
     userMessage = `IMPORTANT: Generate a COMPLETELY DIFFERENT commit message from the previous one. The previous message was: "${request.previousMessage}". Use a different type, scope, or description approach.\n\n${userMessage}`
   }
+  // kilocode_change end
 
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS)
