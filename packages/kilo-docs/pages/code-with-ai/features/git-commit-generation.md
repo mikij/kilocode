@@ -53,7 +53,25 @@ Common types include:
 
 ## Configuration
 
+<<<<<<< feat/commit-message-enhancement
 ### Customizing via AGENTS.md
+=======
+{% tabs %}
+{% tab label="VSCode" %}
+
+The extension provides the same **SCM button** in the VS Code Source Control panel. Clicking it generates a commit message using the CLI backend's commit message generation API.
+
+Configuration is handled through the extension's settings or the shared `kilo.jsonc` config file.
+
+{% callout type="info" %}
+Git commit message generation is a **VS Code extension feature**. It is not available in the CLI/TUI.
+{% /callout %}
+
+{% /tab %}
+{% tab label="VSCode (Legacy)" %}
+
+### Customizing the Commit Template
+>>>>>>> main
 
 You can define commit message instructions in a markdown file with a `## Commit Message` section:
 
@@ -92,6 +110,9 @@ You can configure which API profile to use for commit message generation:
 {% callout type="tip" %}
 Consider creating a dedicated [API configuration profile](/docs/ai-providers) with a faster, more cost-effective model specifically for commit message generation.
 {% /callout %}
+
+{% /tab %}
+{% /tabs %}
 
 ## Best Practices
 
